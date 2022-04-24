@@ -56,6 +56,10 @@ export default function App() {
 		return checkLine || checkColumn || checkDiagonalA || checkDiagonalB
 	}
 
+	const checkIsTie = () => {
+		return board.every((row) => row.every((cell) => cell !== ''))
+	}
+
 	const resetGame = () => {
 		setBoard(
 			Array.from({ length: nbrRowsColumns }, () =>
@@ -69,6 +73,10 @@ export default function App() {
 	useEffect(() => {
 		if (checkIsWinner()) {
 			setWinner(player)
+		}
+
+		if (checkIsTie()) {
+			setWinner('no one')
 		}
 
 		if (!winner) {
