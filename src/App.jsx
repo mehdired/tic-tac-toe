@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
+
+import { checkColumn, checkLine, checkDiagonalA, checkDiagonalB } from './utils/checkLines'
 import './App.css'
+import Cell from './components/Cell'
 
 const nbrRowsColumns = 3
 const arrayTable = Array.from({ length: nbrRowsColumns }, () =>
@@ -11,52 +14,13 @@ export default function App() {
 	const [winner, setWinner] = useState('')
 	const [board, setBoard] = useState(arrayTable)
 
-	const onClickCell = (event, row, cell) => {
-		event.target.classList.add('disable')
-
-		setBoard((prevBoard) => {
-			const newBoard = [...prevBoard]
-			newBoard[row][cell] = player
-
-			return newBoard
-		})
+	const isWinner = () => {
+		return (
+			checkLine(board) || checkColumn(board) || checkDiagonalA(board) || checkDiagonalB(board)
+		)
 	}
 
-	const checkIsWinner = () => {
-		const checkLine = board.some((row) => {
-			return row.every((cell) => cell === row[0] && cell.length > 0)
-		})
-
-		const checkColumn = board
-			.map((_, index) => board.map((cell) => cell[index]))
-			.some((row) => row.every((cell) => cell === row[0] && cell.length > 0))
-
-		const checkDiagonalA = board
-			.reduce((merged, row, rowIndex) => {
-				row.forEach((cell, cellIndex) => {
-					if (rowIndex === cellIndex) {
-						merged.push(cell)
-					}
-				})
-				return merged
-			}, [])
-			.every((cell, _, array) => cell === array[0] && cell.length > 0)
-
-		const checkDiagonalB = board
-			.reduce((merged, row, rowIndex) => {
-				row.forEach((cell, cellIndex) => {
-					if (rowIndex + cellIndex === row.length - 1) {
-						merged.push(cell)
-					}
-				})
-				return merged
-			}, [])
-			.every((cell, _, array) => cell === array[0] && cell.length > 0)
-
-		return checkLine || checkColumn || checkDiagonalA || checkDiagonalB
-	}
-
-	const checkIsTie = () => {
+	const isTie = () => {
 		return board.every((row) => row.every((cell) => cell !== ''))
 	}
 
@@ -71,11 +35,11 @@ export default function App() {
 	}
 
 	useEffect(() => {
-		if (checkIsWinner()) {
+		if (isWinner()) {
 			setWinner(player)
 		}
 
-		if (checkIsTie()) {
+		if (isTie()) {
 			setWinner('no one')
 		}
 
@@ -104,13 +68,14 @@ export default function App() {
 						{board.map((row, rowIndex) => (
 							<tr key={`row${rowIndex}`}>
 								{row.map((cell, cellIndex) => (
-									<td
-										className="ttt-cell"
-										onClick={(event) => onClickCell(event, rowIndex, cellIndex)}
+									<Cell
+										value={cell}
+										cellIndex={cellIndex}
+										rowIndex={rowIndex}
+										setBoard={setBoard}
+										player={player}
 										key={`cell${cellIndex}`}
-									>
-										{cell}
-									</td>
+									/>
 								))}
 							</tr>
 						))}
