@@ -1,13 +1,24 @@
 import { useState, useEffect } from 'react'
+import styled from 'styled-components'
 
 import { checkColumn, checkLine, checkDiagonalA, checkDiagonalB } from './utils/checkLines'
-import './App.css'
 import Cell from './components/Cell'
 
 const nbrRowsColumns = 3
 const arrayTable = Array.from({ length: nbrRowsColumns }, () =>
 	Array.from({ length: nbrRowsColumns }, () => '')
 )
+
+const StyledTable = styled.table`
+	border-collapse: collapse;
+`
+
+const StyledContainer = styled.div`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+`
 
 export default function App() {
 	const [player, setPlayer] = useState('O')
@@ -59,11 +70,11 @@ export default function App() {
 	}, [winner])
 
 	return (
-		<div className="ttt-container">
+		<StyledContainer>
 			<div>
 				{!winner && <p>Turn : {player}</p>}
 
-				<table className="ttt-table">
+				<StyledTable>
 					<tbody>
 						{board.map((row, rowIndex) => (
 							<tr key={`row${rowIndex}`}>
@@ -80,7 +91,7 @@ export default function App() {
 							</tr>
 						))}
 					</tbody>
-				</table>
+				</StyledTable>
 
 				{winner && (
 					<div>
@@ -89,6 +100,6 @@ export default function App() {
 					</div>
 				)}
 			</div>
-		</div>
+		</StyledContainer>
 	)
 }

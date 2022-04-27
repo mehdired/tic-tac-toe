@@ -1,3 +1,19 @@
+import styled from 'styled-components'
+
+const StyledCell = styled.td`
+	border: 1px solid #000;
+	border-collapse: collapse;
+	width: 100px;
+	height: 100px;
+	text-align: center;
+	cursor: pointer;
+	pointer-events: ${(props) => props.disable && 'none'};
+
+	&:active {
+		background-color: #efefef;
+	}
+`
+
 export default function Cell({ value, player, cellIndex, rowIndex, setBoard }) {
 	const onClickCell = (event) => {
 		event.target.classList.add('disable')
@@ -11,8 +27,8 @@ export default function Cell({ value, player, cellIndex, rowIndex, setBoard }) {
 	}
 
 	return (
-		<td className="ttt-cell" onClick={(event) => onClickCell(event)}>
+		<StyledCell disable={value ? true : false} onClick={(event) => onClickCell(event)}>
 			{value}
-		</td>
+		</StyledCell>
 	)
 }
